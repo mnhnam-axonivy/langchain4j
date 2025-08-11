@@ -33,6 +33,8 @@ public @interface SupervisorAgent {
 
     int maxAgentsInvocations() default 10;
 
+    String planningInstruction() default "";
+
     SupervisorContextStrategy contextStrategy() default SupervisorContextStrategy.CHAT_MEMORY;
 
     SupervisorResponseStrategy responseStrategy() default SupervisorResponseStrategy.LAST;

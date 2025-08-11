@@ -22,6 +22,9 @@ public interface PlannerAgent {
             
             For each agent it will be provided both the name and description together with the list of the arguments
             it takes in input using the format {name: description, [argument1, argument2]}.
+            
+            Additional instructions:
+            {{instructions}}
             """)
     @UserMessage("""
             Decide which agent to invoke next, doing things in small steps and
@@ -33,5 +36,5 @@ public interface PlannerAgent {
             The user request is: '{{request}}'.
             The last received response is: '{{lastResponse}}'.
             """)
-    AgentInvocation plan(@MemoryId Object userId, @V("agents") String agents, @V("request") String request, @V("lastResponse") String lastResponse);
+    AgentInvocation plan(@MemoryId Object userId, @V("agents") String agents, @V("request") String request, @V("lastResponse") String lastResponse, @V("instructions") String instructions);
 }

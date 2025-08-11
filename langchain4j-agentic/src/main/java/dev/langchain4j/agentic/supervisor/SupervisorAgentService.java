@@ -29,4 +29,6 @@ public interface SupervisorAgentService<T> {
     SupervisorAgentService<T> maxAgentsInvocations(int maxAgentsInvocations);
 
     SupervisorAgentService<T> errorHandler(Function<ErrorContext, ErrorRecoveryResult> errorHandler);
+
+    SupervisorAgentService<T> planningInstruction(String planningInstruction);
 }

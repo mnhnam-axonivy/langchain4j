@@ -41,6 +41,8 @@ public class SupervisorAgentServiceImpl<T> extends AbstractService<T, Supervisor
 
     private Function<AgenticScope, String> requestGenerator;
 
+    private String planningInstruction = "";
+
     private SupervisorAgentServiceImpl(Class<T> agentServiceClass) {
         super(agentServiceClass);
     }
@@ -105,7 +107,7 @@ public class SupervisorAgentServiceImpl<T> extends AbstractService<T, Supervisor
                 PlannerAgent planner = isAgenticScopeDependent() ?
                         agenticScope.getOrCreateAgent(agentId(), SupervisorAgentServiceImpl.this::buildPlannerAgent) :
                         this.plannerAgent;
-                AgentInvocation agentInvocation = planner.plan(memoryId, agentsList, request, lastResponse);
+                AgentInvocation agentInvocation = planner.plan(memoryId, agentsList, request, lastResponse, planningInstruction);
                 LOG.info("Agent Invocation: {}", agentInvocation);
 
                 if (agentInvocation.getAgentName().equalsIgnoreCase("done")) {
@@ -213,6 +215,12 @@ public class SupervisorAgentServiceImpl<T> extends AbstractService<T, Supervisor
     @Override
     public SupervisorAgentServiceImpl<T> maxAgentsInvocations(int maxAgentsInvocations) {
         this.maxAgentsInvocations = maxAgentsInvocations;
+        return this;
+    }
+
+    @Override
+    public SupervisorAgentServiceImpl<T> planningInstruction(String planningInstruction) {
+        this.planningInstruction = planningInstruction;
         return this;
     }
 }

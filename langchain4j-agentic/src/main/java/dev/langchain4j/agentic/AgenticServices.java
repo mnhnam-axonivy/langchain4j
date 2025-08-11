@@ -342,6 +342,10 @@ public class AgenticServices {
             builder.outputName(supervisorAgent.outputName());
         }
 
+        if (!supervisorAgent.planningInstruction().isBlank()) {
+            builder.planningInstruction(supervisorAgent.planningInstruction());
+        }
+
         selectMethod(agentServiceClass, method -> method.isAnnotationPresent(SupervisorRequest.class) &&
                 method.getReturnType() == String.class)
                 .map(m -> AgenticServices.agenticScopeFunction(m, String.class))

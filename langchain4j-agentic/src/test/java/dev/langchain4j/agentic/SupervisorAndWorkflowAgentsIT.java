@@ -101,4 +101,42 @@ public class SupervisorAndWorkflowAgentsIT {
         System.out.println("Score agent invocations: " + scoreAgentCalls);
         assertThat((Double) scoreAgentCalls.get(scoreAgentCalls.size() - 1).output()).isGreaterThanOrEqualTo(0.8);
     }
+
+    @Test
+    void supervisor_with_planning_instruction_simple_sequence_test() {
+        // Faster test in the same style as existing ones, highlighting planningInstruction
+        CreativeWriter creativeWriter = AgenticServices.agentBuilder(CreativeWriter.class)
+                .chatModel(baseModel())
+                .outputName("story")
+                .build();
+
+        StyleEditor styleEditor = AgenticServices.agentBuilder(StyleEditor.class)
+                .chatModel(baseModel())
+                .outputName("story")
+                .build();
+
+        SupervisorAgent supervisor = AgenticServices.supervisorBuilder()
+                .chatModel(plannerModel())
+                .planningInstruction("Invoke 'generateStory' with {topic} from state, then 'editStory' with {story} and {style} from state. Do not return done until both are executed. Do not loop.")
+                .responseStrategy(SupervisorResponseStrategy.LAST)
+                .subAgents(creativeWriter, styleEditor)
+                .maxAgentsInvocations(2)
+                .outputName("story")
+                .requestGenerator(agenticScope -> {
+                    agenticScope.writeState("topic", "a lighthouse");
+                    agenticScope.writeState("style", "poetic");
+                    return "Write a short story about a lighthouse in a poetic style";
+                })
+                .build();
+
+        ResultWithAgenticScope<String> result = supervisor.invokeWithAgenticScope("ignored");
+
+        String story = result.result();
+        DefaultAgenticScope scope = (DefaultAgenticScope) result.agenticScope();
+
+        assertThat(story).isNotBlank();
+        assertThat(story).isEqualTo(scope.readState("story"));
+        assertThat(scope.agentInvocations("generateStory")).hasSize(1);
+        assertThat(scope.agentInvocations("editStory")).hasSize(1);
+    }
 }
