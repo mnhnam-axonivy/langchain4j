@@ -17,6 +17,10 @@
             <email>mario.fusco@gmail.com</email>
             <url>https://github.com/mariofusco</url>
         </developer>
+        <developer>
+            <id>mnhnam-axonivy</id>
+            <url>https://github.com/mnhnam-axonivy</url>
+        </developer>
     </developers>
 
     <dependencies>
